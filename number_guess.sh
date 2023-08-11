@@ -3,6 +3,7 @@
 PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
 echo -e "Enter your username:" 
+
 read USERNAME
 
 USERNAME_DATABASE=$($PSQL "SELECT name FROM users WHERE name = '$USERNAME'")
@@ -20,7 +21,9 @@ if [[ -z $USERNAME_DATABASE ]]; then
 else
   NUMBER_OF_GAMES=$($PSQL "SELECT games_played FROM users WHERE name='$USERNAME'")
   BEST_GAME_GUESSES=$($PSQL "SELECT best_game_guesses FROM users WHERE name = '$USERNAME'")
-  echo "Welcome back, $USERNAME_DATABASE! You have played $NUMBER_OF_GAMES games, and your best game took $BEST_GAME_GUESSES guesses." #TODO
+
+  echo -e "\nWelcome back, $USERNAME_DATABASE! You have played $NUMBER_OF_GAMES games, and your best game took $BEST_GAME_GUESSES guesses.\n"
+
   GAME_INSERT=$($PSQL "UPDATE users SET games_played=$NUMBER_OF_GAMES + 1 WHERE name='$USERNAME_DATABASE'")
 fi
 
@@ -53,7 +56,9 @@ else
   if [[ $NUMBER_OF_GUESSES -lt $BEST_GAME_GUESSES || -z $BEST_GAME_GUESSES ]]; then
     UPDATE_BEST_GAME=$($PSQL "UPDATE users SET best_game_guesses = $NUMBER_OF_GUESSES WHERE name='$USERNAME_DATABASE'")
   fi
+
   echo -e "\nYou guessed it in $NUMBER_OF_GUESSES tries. The secret number was $RANDOM_NUMBER. Nice job!\n"
+
   exit 0
 fi
 done
