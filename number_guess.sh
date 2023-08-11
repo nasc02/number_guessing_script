@@ -10,7 +10,7 @@ USERNAME_DATABASE=$($PSQL "SELECT name FROM users WHERE name = '$USERNAME'")
 
 if [[ -z $USERNAME_DATABASE ]]; then
   if [[ -n "$USERNAME" && ! "$USERNAME" =~ ^[[:space:]]+$ ]]; then
-    echo "Welcome, $USERNAME! It looks like this is your first time here."
+    echo -e "\nWelcome, $USERNAME! It looks like this is your first time here.\n"
     INSERT_USERNAME=$($PSQL "INSERT INTO users(name) VALUES('$USERNAME')")
     USERNAME_DATABASE=$($PSQL "SELECT name FROM users WHERE name = '$USERNAME'")
     FIRST_GAME_INSERT=$($PSQL "UPDATE users SET games_played=1 WHERE name='$USERNAME'")
@@ -22,7 +22,7 @@ else
   NUMBER_OF_GAMES=$($PSQL "SELECT games_played FROM users WHERE name='$USERNAME'")
   BEST_GAME_GUESSES=$($PSQL "SELECT best_game_guesses FROM users WHERE name = '$USERNAME'")
 
-  echo "Welcome back, $USERNAME_DATABASE! You have played $NUMBER_OF_GAMES games, and your best game took $BEST_GAME_GUESSES guesses."
+  echo -e "\nWelcome back, $USERNAME_DATABASE! You have played $NUMBER_OF_GAMES games, and your best game took $BEST_GAME_GUESSES guesses.\n"
 
   GAME_INSERT=$($PSQL "UPDATE users SET games_played=$NUMBER_OF_GAMES + 1 WHERE name='$USERNAME_DATABASE'")
 fi
@@ -30,10 +30,10 @@ fi
 RANDOM_NUMBER=$(shuf -i 1-1000 -n 1)
 
 GUESS_ATTEMPT(){
-echo "Guess the secret number between 1 and 1000:"
 read INPUT
 }
 
+echo "Guess the secret number between 1 and 1000:"
 GUESS_ATTEMPT
 
 NUMBER_OF_GUESSES=1
@@ -41,15 +41,15 @@ BEST_GAME_GUESSES=$($PSQL "SELECT best_game_guesses FROM users WHERE name = '$US
 
 while true; do
 if ! [[ "$INPUT" =~ ^[0-9]+$ ]]; then
-  echo -e "\nThat is not an integer, guess again:\n"
+  echo -e "\nThat is not an integer, guess again:"
   NUMBER_OF_GUESSES=$(($NUMBER_OF_GUESSES + 1))
   GUESS_ATTEMPT
 elif [[ $INPUT -gt $RANDOM_NUMBER ]]; then
-  echo -e "\nIt's lower than that, guess again:\n"
+  echo -e "\nIt's lower than that, guess again:"
   NUMBER_OF_GUESSES=$(($NUMBER_OF_GUESSES + 1))
   GUESS_ATTEMPT
 elif [[ $INPUT -lt $RANDOM_NUMBER ]]; then
-  echo -e "\nIt's higher than that, guess again:\n"
+  echo -e "\nIt's higher than that, guess again:"
   NUMBER_OF_GUESSES=$(($NUMBER_OF_GUESSES + 1))
   GUESS_ATTEMPT
 else
@@ -58,7 +58,6 @@ else
   fi
 
   echo -e "\nYou guessed it in $NUMBER_OF_GUESSES tries. The secret number was $RANDOM_NUMBER. Nice job!\n"
-
   exit 0
 fi
 done
