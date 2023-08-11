@@ -22,7 +22,7 @@ else
   NUMBER_OF_GAMES=$($PSQL "SELECT games_played FROM users WHERE name='$USERNAME'")
   BEST_GAME_GUESSES=$($PSQL "SELECT best_game_guesses FROM users WHERE name = '$USERNAME'")
 
-  echo -e "\nWelcome back, $USERNAME_DATABASE! You have played $NUMBER_OF_GAMES games, and your best game took $BEST_GAME_GUESSES guesses.\n"
+  echo "Welcome back, $USERNAME_DATABASE! You have played $NUMBER_OF_GAMES games, and your best game took $BEST_GAME_GUESSES guesses."
 
   GAME_INSERT=$($PSQL "UPDATE users SET games_played=$NUMBER_OF_GAMES + 1 WHERE name='$USERNAME_DATABASE'")
 fi
